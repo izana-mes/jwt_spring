@@ -1,39 +1,29 @@
 package com.example.app.config;
 
-import com.example.app.modules.auth.security.CustomUserDetailsService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
+/**
+ * Configuration class for JWT-related beans.
+ *
+ * What this class does:
+ * - Centralizes JWT configuration in one place
+ * - Makes JWT settings available as properties (optional, when using @ConfigurationProperties)
+ * - Can provide additional JWT-related beans
+ *
+ * Why it exists:
+ * - Separation of concerns: Security config focuses on filter chains; JwtConfig focuses on JWT beans
+ * - Enterprise projects often have dedicated config classes per domain
+ * - Makes it easy to swap JWT implementation or add multiple JWT providers
+ *
+ * How it interacts:
+ * - JwtProvider is the actual bean that generates/validates tokens (defined in auth/security)
+ * - SecurityConfig wires JwtAuthenticationFilter which uses JwtProvider
+ * - AuthService uses JwtProvider to generate access tokens after login/register
+ */
 @Configuration
-@RequiredArgsConstructor
 public class JwtConfig {
-
-    private final CustomUserDetailsService userDetailsService;
-
-    @Bean
-    public AuthenticationProvider authenticationProvider() {
-        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-        authProvider.setUserDetailsService(userDetailsService);
-        authProvider.setPasswordEncoder(passwordEncoder());
-        return authProvider;
-    }
-
-    @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
-        return config.getAuthenticationManager();
-    }
-
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-
+    // JwtProvider is @Component in auth.security - no additional bean definition needed here.
+    // This class serves as a placeholder for future JWT-specific configuration,
+    // e.g. @EnableConfigurationProperties(JwtProperties.class) when using a properties class.
 }
